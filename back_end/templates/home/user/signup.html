@@ -1,0 +1,58 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+User Signin
+{% endblock %}
+
+{% block content %}
+<h1>User Signin</h1>
+<div class="container mt-5">
+    <div class="row justify-content-end">
+        <div class="col-2">
+            <a class="btn btn-primary" href="{{ url_for('home') }}">home</a>
+            <a class="btn btn-primary" href="{{ url_for('login') }}">login</a>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-4">
+                <h1>Signin</h1>
+                <div class="card text-left text-dark">
+                    <div class="card-body text-dark">
+                        <form action="/signup" method="POST">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter name">
+                            </div>
+                            <div class="form-group">
+                                <label for="surname">Surname</label>
+                                <input type="text" class="form-control" id="surname" name="surname"
+                                    placeholder="Enter surname">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    placeholder="Enter email">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password" name="password"
+                                    placeholder="Enter password">
+                            </div>
+                            <div class="form-group">
+                                <label for="cosmo">Cosmo</label>
+                                <select class="form-control" id="cosmo" name="cosmo">
+                                    <option value="tunisia">Animals</option>
+                                    <option value="egypt">Cyber</option>
+                                    <option value="spain">Plants</option>
+                                    <option value="italy">Urban</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary mx-2">Register</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}

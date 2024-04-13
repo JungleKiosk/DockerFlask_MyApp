@@ -11,7 +11,9 @@ def home():
 def login():
       return render_template('home/user/login.html')
 
-
+@app.route('/signup')
+def signup():
+      return render_template('home/user/signup.html')
 
 
 if __name__ == '__main__':
