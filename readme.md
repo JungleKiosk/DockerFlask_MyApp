@@ -154,6 +154,8 @@ flask_cors
 flask_sqlalchemy
 psycopg2
 ```
+![reqtxt_2](/back_end/assets/img/readme/2_reqtxt_2.png)
+
 > [!CAUTION]
 > ⚠️Remember: EVERY TIME YOU ADD A DEPENDENCE IN `requirements.txt` you ALWAYS NEED TO REDO THE BUILD: 👇
 ```
