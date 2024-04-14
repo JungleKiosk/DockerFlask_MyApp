@@ -293,8 +293,42 @@ def signup():
 
 - `render_template` of the registration form: If the request is of type **GET** or if the registration is unsuccessful, the HTML template corresponding to the registration page is displayed.
 
->[!NOTA]
-> The `session` variable is used through `request`. In Flask, the request object contains all information about the current HTTP request, including data sent by the client and user session information.
+> [!NOTA]
+> The `session` variable is used through `request`. In Flask, the [request](https://flask.palletsprojects.com/en/3.0.x/reqcontext/) object contains all information about the current HTTP request, including data sent by the client and user session information.
 
 > [!IMPORTANT]
-> -request is an object that represents the HTTP request sent to the server by a web client. It is used to get data sent by the client, such as form field values.<br> -flash is a mechanism for storing short messages in the user session. These messages appear on the next page loaded by the server. <br> -redirect is a Flask feature that redirects the user to another page. <br> -url_for is a Flask function that generates the URL for a specific view function, which can be useful when doing redirects. <br> -render_template is a Flask function that loads an HTML template and renders it to the web client.
+> -request is an object that represents the HTTP request sent to the server by a web client. It is used to get data sent by the client, such as form field values.<br> <br> -flash is a mechanism for storing short messages in the user session. These messages appear on the next page loaded by the server.<br> <br> -redirect is a Flask feature that redirects the user to another page.<br> <br> -url_for is a Flask function that generates the URL for a specific view function, which can be useful when doing redirects.<br> <br> -render_template is a Flask function that loads an HTML template and renders it to the web client.
+
+### 🔹How does the user record data? ⛩️Jinja⛩️
+The user will have to register on the server through an HTML `form` and send the data with a classic `Submit' `button`.
+This is where `render_template` comes into play and allows you to view HTML files in the Browser.<br><br>
+
+When you import `render_template` into a Flask application, you automatically have access to the [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templating engine, since Flask uses Jinja2 as the default rendering engine to generate HTML files.
+
+> [!NOTE]
+> Jinja2 is a very powerful and flexible templating engine that allows you to embed Python logic within your HTML files. When you use render_template in Flask, you are actually calling Jinja2 to process the specified HTML template and return the rendered version to the client browser.
+
+⛩️ Please refer to the repo dedicated to Jinja 👉 [take a look](https://github.com/JungleKiosk/DockerFlask_Jinja/tree/main)⛩️
+
+With the Jinja2 templating engine you can:
+- Tag syntax: Jinja provides special tags like `{% ... %}` to insert Python logic into templates, such as loops, conditions, and variable definitions.
+
+```
+{% extends "base.html" %}
+
+{% block title %}
+
+HTML title page
+
+{% endblock %}
+
+{% block content %}
+
+HTML code
+
+{% endblock %}
+```
+- Dynamic variables: Variables defined within the Flask application can be passed to templates and inserted dynamically using the `{{ ... }}` syntax.
+- Template inheritance: Jinja supports template inheritance, allowing the creation of basic layouts that can be extended or overridden by other templates.
+- Including other templates: You can include other Jinja templates within a main template for better organization of your HTML code.
+
