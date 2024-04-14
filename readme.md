@@ -384,7 +384,7 @@ def signup():
     return render_template('home/user/signup.html')
 ```
 
-![sign](/back_end/assets/img/readme/sign.png)
+![sign](/back_end/assets/img/readme/5_signup_html.png)
 ![register](/back_end/assets/img/readme/register.png)
 
 > [!NOTE]

@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'my_secret'
@@ -25,13 +26,15 @@ class Users(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     cosmo = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(60), nullable=False)
-
-    def __init__(self, name, surname, email, cosmo, password):
+    password_hash = db.Column(db.String(128), nullable=False)
+       
+    def __init__(self, name, surname, email, cosmo, password, password_hash):
         self.name = name
         self.surname = surname
         self.email = email
         self.cosmo = cosmo
         self.password = password
+        self.password_hash = generate_password_hash(password_hash)
 
  
 with app.app_context():
@@ -55,16 +58,20 @@ def signup():
         cosmo = request.form['cosmo']
 
         existing_user = Users.query.filter_by(email=email).first()
+
         if existing_user:
             flash('Email already exists, please choose another one', 'error')
             return redirect(url_for('signup'))
+
+        password_hash = generate_password_hash(password)
 
         new_user = Users(
             name=name,
             surname=surname,
             email=email,
             cosmo=cosmo,
-            password=password
+            password=password,
+            password_hash=password_hash
         )
         db.session.add(new_user)
         db.session.commit()
@@ -73,6 +80,7 @@ def signup():
         return redirect(url_for('login'))
 
     return render_template('home/user/signup.html')
+
 
 
 if __name__ == '__main__':
