@@ -299,7 +299,7 @@ def signup():
 > [!IMPORTANT]
 > -request is an object that represents the HTTP request sent to the server by a web client. It is used to get data sent by the client, such as form field values.<br> <br> -flash is a mechanism for storing short messages in the user session. These messages appear on the next page loaded by the server.<br> <br> -redirect is a Flask feature that redirects the user to another page.<br> <br> -url_for is a Flask function that generates the URL for a specific view function, which can be useful when doing redirects.<br> <br> -render_template is a Flask function that loads an HTML template and renders it to the web client.
 
-### 🔹How does the user record data? ⛩️Jinja⛩️
+### 🔹How does the user enter/record data? ⛩️Jinja⛩️
 The user will have to register on the server through an HTML `form` and send the data with a classic 'Submit' button.
 This is where `render_template` comes into play and allows you to view HTML files in the Browser.<br><br>
 
@@ -331,5 +331,63 @@ HTML code
 - Dynamic variables: Variables defined within the Flask application can be passed to templates and inserted dynamically using the `{{ ... }}` syntax.
 - Template inheritance: Jinja supports template inheritance, allowing the creation of basic layouts that can be extended or overridden by other templates.
 - Including other templates: You can include other Jinja templates within a main template for better organization of your HTML code.
+
+### 🔹Flowchart SIGNUP
+
+1) l'utente accede alla pagina HOME
+
+```
+@app.route('/')
+def home():
+    return render_template('home/home.html')
+```
+![home](/back_end/assets/img/readme/home.png)
+
+2) the user wants to log in or register, then click on the 'Login' button at the top right
+```
+@app.route('/login')
+def login():
+      return render_template('home/user/login.html')
+```
+![log](/back_end/assets/img/readme/log.png)
+
+3) the user is NOT logged in, so click on the "Sign up" button, enter their credentials in the HTML form and click on the register button
+
+```
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        name = request.form['name']
+        surname = request.form['surname']
+        email = request.form['email']
+        password = request.form['password']
+        cosmo = request.form['cosmo']
+
+        existing_user = Users.query.filter_by(email=email).first()
+        if existing_user:
+            flash('Email already exists, please choose another one', 'error')
+            return redirect(url_for('signup'))
+
+        new_user = Users(
+            name=name,
+            surname=surname,
+            email=email,
+            cosmo=cosmo,
+            password=password
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        
+        flash('User registered successfully', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('home/user/signup.html')
+```
+
+![sign](/back_end/assets/img/readme/sign.png)
+![register](/back_end/assets/img/readme/register.png)
+
+> [!NOTE]
+> Once the user registers the data is sent to the pgAdmin server and recorded in the 'user' table <br> ![7_signup_pgAdmin](/back_end/assets/img/readme/7_signup_pgAdmin.png)
 
 
