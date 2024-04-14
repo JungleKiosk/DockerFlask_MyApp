@@ -48,7 +48,7 @@ Please refer to the repo dedicated to creating the [Docker Compose](https://gith
 > [!CAUTION]
 > First the Docker Compose image must be built and run, and only then can the server be created in pgAdmin, otherwise it would lead to errors 👉[take a look](https://github.com/JungleKiosk/DockerFlask_pgAdmin) 
 
-### Run Docker Flask Application
+### How to Run Docker Flask Application 🚀
 
 ```
 cd back_end
@@ -59,10 +59,27 @@ docker-compose build web
 ```
 docker-compose up web
 ```
+
+**the application is empty, to display a first route in the browser DOM it is necessary to write and run the main.py file from the service 👇**
+
 ### first basic app
+```
+from flask import Flask
+from os import environ
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return 'Hello Flak'
+
+if __name__ == '__main__':
+        app.run(host='0.0.0.0',port=environ.get('PORT'),debug=environ.get('DEBUG'))
+```
 Let's start the service with a first simple route [Flask](https://flask.palletsprojects.com/en/3.0.x/), so as to display a [return](https://flask.palletsprojects.com/en/3.0.x/quickstart/#routing) message on the page:
 ```
 from flask import Flask
+from os import environ
 
 ```
 1) This line imports the Flask class from the flask module, which is the lightweight web framework used to build the application
@@ -84,7 +101,7 @@ def home():
 4) This is the function associated with the main route. When the `'/'` route is requested, this function executes and returns the string `'Hello Flask'`.
 ```
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=environ.get('PORT'),debug=environ.get('DEBUG'))
+        app.run(host='0.0.0.0',port=environ.get('PORT'),debug=environ.get('DEBUG'))
 
 ```
 focus on this part of the code, which is essential for starting the services
