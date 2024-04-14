@@ -33,10 +33,10 @@ In the context of Docker Compose, the **requirements.txt** file is used to speci
 ![reqtxt](/back_end/assets/img/readme/1_reqtxt.png)
 
 > [!IMPORTANT]
-> Quando si avvia un nuovo ambiente di sviluppo o si distribuisce l'applicazione su un server, è possibile utilizzare il file requirements.txt per installare tutte le dipendenze necessarie con un singolo comando: `pip install -r requirements.txt`
+> When you launch a new development environment or deploy your application to a server, you can use the requirements.txt file to install all the necessary dependencies with a single command: `pip install -r requirements.txt`
 
 > [!CAUTION]
-> Nel contesto Docker Compose Il file requirements.txt viene chiamato dal **Dockerfile** (💡ricorda: Dockerfile è all'interno della cartella back_end insieme al file main.py e al file requirements.txt 🤓)
+> In the Docker Compose context The requirements.txt file is called from the **Dockerfile** (💡remember: Dockerfile is inside the back_end folder together with the main.py file and the requirements.txt file 🤓)
 
 ### Create Docker Compose & PostgreSQL environment 
 
@@ -52,6 +52,23 @@ Please refer to the repo dedicated to creating the [Docker Compose](https://gith
 
 ```
 cd back_end
+```
+```
+docker-compose build web
+```
+```
+docker-compose up web
+```
+> [!CAUTION]
+> ⚠️Remember: EVERY TIME YOU ADD A DEPENDENCE IN `requirements.txt` you ALWAYS NEED TO REDO THE BUILD: 👇
+```
+cd back_end
+```
+```
+docker-compose stop
+```
+```
+docker-compose down
 ```
 ```
 docker-compose build web
@@ -125,11 +142,37 @@ focus on this part of the code, which is essential for starting the services
 > The HTTP protocol is the foundation of data communication on the web. In this protocol, several methods are defined that are used to retrieve data from the given URL.
 
 ### Record the data in the DB PostgreSQL 🌴🐘🌴
-### Import [SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/) ⚗️
 - initialize the Flask application
 - configure the SQLAlchemy database
 - defines the table structure in the database
-#### Dependences
+#### Import [SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/) ⚗️
+
+Import the necessary dependencies into the `requirements.txt`
+```
+flask
+flask_cors
+flask_sqlalchemy
+psycopg2
+```
+> [!CAUTION]
+> ⚠️Remember: EVERY TIME YOU ADD A DEPENDENCE IN `requirements.txt` you ALWAYS NEED TO REDO THE BUILD: 👇
+```
+cd back_end
+```
+```
+docker-compose stop
+```
+```
+docker-compose down
+```
+```
+docker-compose build web
+```
+```
+docker-compose up web
+```
+#### Import dependencies in main.py
+
 ```
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
