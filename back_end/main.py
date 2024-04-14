@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
 
@@ -14,9 +14,9 @@ DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
 )
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
-
-
 db = SQLAlchemy(app)
+
+
 class Users(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -33,11 +33,6 @@ class Users(db.Model):
         self.cosmo = cosmo
         self.password = password
 
-    @classmethod
-    def create_user(cls, name, surname, email, cosmo, password):
-        new_user = cls(name=name, surname=surname, email=email, cosmo=cosmo, password=password)
-        db.session.add(new_user)
-        db.session.commit()
  
 with app.app_context():
     db.create_all()
@@ -49,8 +44,6 @@ def home():
 @app.route('/login')
 def login():
       return render_template('home/user/login.html')
-
-from flask import request, redirect, url_for, flash
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
