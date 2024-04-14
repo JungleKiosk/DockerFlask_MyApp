@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from os import environ
 
 app = Flask(__name__)
+app.secret_key = 'my_secret'
+
 
 DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
     user=environ.get('POSTGRES_USER'),
