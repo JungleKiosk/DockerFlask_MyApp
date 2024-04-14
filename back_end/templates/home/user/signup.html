@@ -49,6 +49,11 @@ User Signin
                             </div>
                             <button type="submit" class="btn btn-primary mx-2">Register</button>
                         </form>
+                        {% for message in get_flashed_messages() %}
+                        <div style="color: black;" class="alert alert-{{ message[] }} text-dark" role="alert">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

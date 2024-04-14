@@ -61,19 +61,26 @@ def signup():
         password = request.form['password']
         cosmo = request.form['cosmo']
 
-        # Verifica se l'utente esiste già nel database
         existing_user = Users.query.filter_by(email=email).first()
         if existing_user:
             flash('Email already exists, please choose another one', 'error')
             return redirect(url_for('signup'))
 
-        # Crea un nuovo utente e lo aggiungi al database
-        Users.create_user(name, surname, email, cosmo, password)
+        new_user = Users(
+            name=name,
+            surname=surname,
+            email=email,
+            cosmo=cosmo,
+            password=password
+        )
+        db.session.add(new_user)
+        db.session.commit()
         
         flash('User registered successfully', 'success')
         return redirect(url_for('login'))
 
     return render_template('home/user/signup.html')
+
 
 
 
