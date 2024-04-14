@@ -76,6 +76,7 @@ def home():
 if __name__ == '__main__':
         app.run(host='0.0.0.0',port=environ.get('PORT'),debug=environ.get('DEBUG'))
 ```
+- explanation:
 Let's start the service with a first simple route [Flask](https://flask.palletsprojects.com/en/3.0.x/), so as to display a [return](https://flask.palletsprojects.com/en/3.0.x/quickstart/#routing) message on the page:
 ```
 from flask import Flask
@@ -114,13 +115,87 @@ focus on this part of the code, which is essential for starting the services
 > In the docker-compose.yml file, in the services section, environment variables are defined for the web service: `DEBUG=1` sets Flask's debug mode to enabled. `PORT=5000` specifies the port on which the Flask application will listen. 👉[take a look](https://github.com/JungleKiosk/DockerFlask_pgAdmin) 
 
 > [!IMPORTANT]
-> In the docker-compose.yml file, in the services section, the web service is configured to build the backend, mounting the source code from ./back_end inside the Docker container. The ports configuration maps port 5000 of the container to port 5000 of the host, thus allowing you to access the Flask application through the browser or another client application. The environment variables defined in the environment section are passed to the Flask application as environment variables, allowing dynamic configuration of the application. Finally, depends_on specifies that the web service depends on the db service, ensuring that the db service is started before the web service. 👉[take a look](https://github.com/JungleKiosk/DockerFlask_pgAdmin)
+> In the docker-compose.yml file, in the services section, the web service is configured to build the backend, mounting the source code from `./back_end` inside the Docker container. The ports configuration maps `port 5000` of the container to `port 5000` of the host, thus allowing you to access the Flask application through the browser or another client application. The environment variables defined in the environment section are passed to the Flask application as environment variables, allowing dynamic configuration of the application. Finally, depends_on specifies that the web service depends on the db service, ensuring that the db service is started before the web service. 👉[take a look](https://github.com/JungleKiosk/DockerFlask_pgAdmin)
 
 >[!NOTE]
-> In the context of the provided Python code, the host='0.0.0.0' option in the invocation of app.run() specifies the IP address on which the Flask application will listen.In the context of Docker Compose, when defining a service, such as in your docker-compose.yml file, setting IP addresses is not as explicit as in the Flask application. By default, Docker Compose creates a virtual network for the services defined in the docker-compose.yml file, and the services can communicate with each other using the service names as hostnames.So, when the Flask service defines host='0.0.0.0', it is telling Flask to listen on all available network interfaces, making the application available from any IP address within the Docker container network.In the context of Docker Compose, the Flask service is exposed to the outside world through port mapping in the docker-compose.yml file, for example ports: - 5000:5000. This means that the Flask service is accessible from outside the Docker container on port 5000.
+> In the context of the provided Python code, the `host='0.0.0.0'` option in the invocation of app.run() specifies the IP address on which the Flask application will listen.In the context of Docker Compose, when defining a service, such as in your docker-compose.yml file, setting IP addresses is not as explicit as in the Flask application. By default, Docker Compose creates a virtual network for the services defined in the docker-compose.yml file, and the services can communicate with each other using the service names as hostnames.So, when the Flask service defines `host='0.0.0.0'`, it is telling Flask to listen on all available network interfaces, making the application available from any IP address within the Docker container network.In the context of Docker Compose, the Flask service is exposed to the outside world through port mapping in the docker-compose.yml file, for example ports: - 5000:5000. This means that the Flask service is accessible from outside the Docker container on `port 5000`.
 
+## HTTP protocol 💻 -> 🗃️ -> 🌐 -> 💻
+> [!NOTE]
+> The HTTP protocol is the foundation of data communication on the web. In this protocol, several methods are defined that are used to retrieve data from the given URL.
 
+### Record the data in the DB PostgreSQL 🌴🐘🌴
+### Import [SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/) ⚗️
+- initialize the Flask application
+- configure the SQLAlchemy database
+- defines the table structure in the database
+#### Dependences
+```
+from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_sqlalchemy import SQLAlchemy
+from os import environ
+```
+- Flask: Framework for developing web applications in Python.
+render_template, request, redirect, url_for, flash: Flask modules for handling HTTP requests, rendering HTML templates, redirecting requests, and handling flash messages.
+- SQLAlchemy: Python library for interfacing with relational databases.
+- environ: Function for accessing the operating system's environment variables.
 
+#### Secret Key 🔑🍪
+```
+app = Flask(__name__)
+app.secret_key = 'my_secret'
+```
+- A Flask object called app is created.
+- The secret_key is set to enable session features and cookie encryption.
+
+#### URL of the DB
+```
+DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
+    user=environ.get('POSTGRES_USER'),
+    pw=environ.get('POSTGRES_PASSWORD'),
+    url=environ.get('POSTGRES_URL'),
+    db=environ.get('POSTGRES_DB')
+)
+```
+- The PostgreSQL database URL is created using environment variables for the user, password, database URL, and database name.
+
+#### Database setup in Flask application
+```
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
+```
+- The database URI is set in the app.config object of the Flask application. This tells SQLAlchemy how to connect to the database.
+
+#### Initializing SQLAlchemy extension ⚗️ 
+```
+db = SQLAlchemy(app)
+```
+- The SQLAlchemy extension is initialized by passing the app object.
+
+#### Create table in DB
+```
+class Users(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), nullable=False)
+    surname = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
+```
+- A Users class is defined that inherits from SQLAlchemy's `db.Model` class.
+- The name of the table in the database `(__tablename__)` is specified.
+- The table fields (id, name, surname, email, cosmo, password) are defined with their respective data types and constraints.
+
+#### Creating tables in the database
+```
+with app.app_context():
+    db.create_all()
+```
+- The table in the database is created using the Flask application context (app.app_context()). This ensures that the table creation operation is performed within the correct environment.
+
+*Quick Refresher*
+- Il metodo GET viene utilizzato per recuperare le informazioni dal server. Quando si accede alla rotta /signup tramite il metodo GET, il server restituirà la pagina HTML corrispondente al form di registrazione (render_template('home/user/signup.html')).
+
+- Il metodo POST viene utilizzato per inviare dati al server per essere elaborati. Quando si invia il form compilato dalla pagina di registrazione, i dati vengono inviati al server utilizzando il metodo POST. Il server quindi riceve questi dati e li elabora, come nel caso della funzione signup(). Questo metodo è utilizzato per inviare informazioni sensibili, come password e altre informazioni personali, in modo sicuro al server.
 
 
 
