@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{%include 'partials/navbar.html' %}
+
+{% block content %}
+<a href="/{{country}}/articles">Back</a>
+<div class="container mt-5">
+    <h1>{{article.title}}</h1>    
+   <div class="">{{article.text|safe}}</div>
+</div>
+{% endblock %}

@@ -390,4 +390,8 @@ def signup():
 > [!NOTE]
 > Once the user registers the data is sent to the pgAdmin server and recorded in the 'user' table <br> ![7_signup_pgAdmin](/back_end/assets/img/readme/7_signup_pgAdmin.png)
 
+## 🔷Creazione dei RUOLI 🧝‍♂️
 
+- I ruoli degli utenti sono rappresentati come stringhe all'interno del campo roles.
+- Ogni utente può avere uno o più ruoli, separati da virgole (o un altro delimitatore definito nel codice).
+- Ad esempio, un utente potrebbe avere il ruolo di "SUPER_ADMIN", "ADMIN_EGYPT", "ADMIN_ITALY", "ADMIN_SPAIN", o "ADMIN_TUNISIA", come specificato nell'elenco app.config['ACCESS_DASHBOARD'].

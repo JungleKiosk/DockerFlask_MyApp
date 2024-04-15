@@ -55,15 +55,7 @@ User Signup
                         </form>
                     </div>
                 </div>
-                {% for message in get_flashed_messages() %}
-                <div class="card bg-dark mt-3">
-                    <div
-                        class="alert alert-{{ message[] }} text-white"
-                        role="alert">
-                        {{ message }}
-                    </div>
-                </div>
-                {% endfor %}
+                
             </div>
         </div>
     </div>

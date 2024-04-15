@@ -21,7 +21,8 @@ User Login
                 <div class="card-body">
                     <form action="/login" method="POST">
                         <div class="form-group">
-                            <label for="username_or_email">Username or Email</label>
+                            <label for="email">Username or
+                                Email</label>
                             <input type="text" class="form-control" name="email"
                                 placeholder="email">
                         </div>
@@ -31,13 +32,21 @@ User Login
                                 name="password"
                                 placeholder="Enter password">
                         </div>
-                        <button type="submit"
-                            class="btn btn-primary mx-2">Login</button>
+                        <button type="submit" class="btn btn-primary mx-2">Login</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+    {% for message in get_flashed_messages() %}
+    <div class="card bg-dark mt-3">
+        <div
+            class="alert alert-{{ message[1] }} text-white"
+            role="alert">
+            {{ message }}
+        </div>
+    </div>
+    {% endfor %}
 </div>
 
 {% endblock %}
