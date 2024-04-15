@@ -390,9 +390,9 @@ def signup():
 > [!NOTE]
 > Once the user registers the data is sent to the pgAdmin server and recorded in the 'user' table <br> ![7_signup_pgAdmin](/back_end/assets/img/readme/7_signup_pgAdmin.png)
 
-## 🔷SIGNUP: RUOLI, JWT & coockies 🧝‍♂️🔑🍪
+## 🟦 SIGN UP: ROLES, JWT and cookies 🧝🧙‍♂️🧘🧑‍🚀
 
-1) First of all you need to import the necessary dependencies in the `requirements.txt`:
+### 1) First of all you need to import the necessary dependencies in the `requirements.txt`:
 
 ```
 PyJWT
@@ -418,7 +418,7 @@ import jwt
 from flask_migrate import Migrate
 from werkzeug.security import check_password_hash
 ```
-2) we move on to defining the data model used to represent users in the database.
+### 2) we move on to defining the data model used to represent users in the database.
 
 ```
 app = Flask(__name__)
@@ -431,7 +431,7 @@ app.secret_key = environ.get('SECRET_KEY')
 >❓What changed from before❓ (`app.secret_key = 'my_secret'`)<br> Retrieved from the environment variables of the `docker-compose.yml` file using `environ.get('SECRET_KEY')`.<br > ![8_secret_env](/back_end/assets/img/readme/8_secret_env.png)
 
 
-3) SQLAlchemy database setup:
+### 3) SQLAlchemy database setup:
 
 - The PostgreSQL database URL is defined using the POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_URL and POSTGRES_DB environment variables.
 
@@ -447,15 +447,16 @@ DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
 
 `app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL`
 
-4) Configuring security options 🔐🔑
+### 4) Configuring security options 🔐🔑
 
 - `app.config['SECRET_KEY'] = environ.get('SECRET_KEY') `set the Flask application secret key.
 
 - `app.config['SECURITY_PASSWORD_SALT'] = "MY_SECRET"` sets a SALT for the password, which can be used to make storing passwords in the database more secure.
      - `SALT` is a security technique used in hashing passwords to protect them from common attack techniques, such as dictionary attacks or rainbow tables.
      - In short, the `SALT` is a unique random value added to the password before being hashed. This makes the resulting hash unique even for two identical passwords, preventing attackers from quickly identifying common passwords via hash comparison.
-     > [!CAUTION]
-     > using a static salt like **"MY_SECRET"** is not ideal in terms of security, since a salt should be unique and random for each password. Therefore, it would be better to generate a random and unique salt for each password, or use a specific password management library or module that automatically takes care of salt generation.
+
+> [!CAUTION]
+> using a static salt like **"MY_SECRET"** is not ideal in terms of security, since a salt should be unique and random for each password. Therefore, it would be better to generate a random and unique salt for each password, or use a specific password management library or module that automatically takes care of salt generation.
 
 - `app.config['SECURITY_REGISTERABLE'] = True` enable user registration.
      - When set to True, allows users to register and create new accounts within the application. This is usually used in web applications that require user management, such as social networks, forums or e-commerce platforms.
@@ -471,20 +472,23 @@ DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
      - This attribute defines a list of roles that have access to the application control panel. For example, a user with the 'SUPER_ADMIN' role will have full access to all application features and resources, while users with other roles may only have access to certain areas or specific functionality.
      - The roles listed in this list, such as 'SUPER_ADMIN', 'ADMIN_ANIMALS', 'ADMIN_CYBER', 'ADMIN_PLANTS', 'ADMIN_URBAN', determine access privileges and permissions within the application.
      - For example, a user with the 'SUPER_ADMIN' (Dashboard CRUD) role will have full access to all application features and resources, while users with other roles may only have access to certain areas or specific functionality.
-     > [!NOTE]
-     > User roles are represented as strings within the roles field 👉[take a look to file auth.py](https://github.com/JungleKiosk/DockerFlask_MyApp/blob/main/back_end/Middleware/auth.py)<br>Each user can have one or more roles, separated by commas (or another delimiter defined in the code).
+> [!NOTE]
+> User roles are represented as strings within the roles field 👉[take a look to file auth.py](https://github.com/JungleKiosk/DockerFlask_MyApp/blob/main/back_end/Middleware/auth.py)<br>Each user can have one or more roles, separated by commas (or another delimiter defined in the code).
 
 
 > [!NOTE]
-> Syntax explanation:<br>-app: is the instance of the Flask application you are creating.<br>-config: is the app attribute that contains the application configurations.<br>-['... ']: is the key within the configuration dictionary that specifies whether the user registration functionality is enabled or not.<br>-`True`: is the value associated with the 'SECURITY_REGISTERABLE' key, which indicates that the functionality User registration is enabled. <br> So when you set a configuration like app.config['SECURITY_REGISTERABLE'] = True, Flask stores this information in the configuration dictionary. Next, if you want to access this configuration, Flask will use the 'SECURITY_REGISTERABLE' key to retrieve the associated value, which is True.🤓 👉[take a look to route(/signup) in main.py](https://github.com/JungleKiosk/DockerFlask_MyApp/blob/main/back_end/main.py)<br>![9_signup_SECRET_KEY](/back_end/assets/img/readme/9_signup_SECRET_KEY.png)
+> 🤓Syntax explanation:<br>-`app`: is the instance of the Flask application you are creating.<br>-`config`: is the app attribute that contains the application configurations.<br>-`['... ']`: is the key within the configuration dictionary that specifies whether the user registration functionality is enabled or not.<br>-`True`: is the value associated with the 'SECURITY_REGISTERABLE' key, which indicates that the functionality User registration is enabled. <br> So when you set a configuration like app.config['SECURITY_REGISTERABLE'] = True, Flask stores this information in the configuration dictionary. Next, if you want to access this configuration, Flask will use the 'SECURITY_REGISTERABLE' key to retrieve the associated value, which is True.🤓 👉[take a look to route(/signup) in main.py](https://github.com/JungleKiosk/DockerFlask_MyApp/blob/main/back_end/main.py)<br><br>![9_signup_SECRET_KEY](/back_end/assets/img/readme/9_signup_SECRET_KEY.png)
 
-
-
-
+### 5) instances of creation and management of the database
 - `db = SQLAlchemy(app)` instantiates a SQLAlchemy object that represents your Flask application's database. SQLAlchemy is a Python API for working with relational databases in a flexible and powerful way.
 
 > [!NOTE]
 > The SQLAlchemy(app) function initializes SQLAlchemy with the Flask app application, allowing the application to interact with the database through SQLAlchemy. This connection between Flask and SQLAlchemy allows you to define data models as Python classes, which are then mapped to tables in the database. SQLAlchemy also provides tools to query your database, manage transactions, and more, making it easy to work with your database within your Flask application.
+
+- `migrate = Migrate(app, db)` initializes a Migrate object that handles database migrations for the Flask application. Database migrations are procedures that allow you to make changes to the database schema in a controlled and reversible way, such as adding new tables, modifying existing columns, or updating integrity constraints.
+
+> [!NOTE]
+>The Migrate object requires two parameters:<br>- `app`: The Flask application that the database migrations are associated with.<br>- `db`: The SQLAlchemy object representing the application database.<br> When used in conjunction with Flask-Migrate, the Migrate object allows you to generate, apply, and cancel database migrations using command-line commands, allowing complete control over your database schema as you develop and upgrade your application.
 
 
 
