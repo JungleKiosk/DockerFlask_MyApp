@@ -25,7 +25,7 @@ app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
 app.config['SECURITY_PASSWORD_SALT'] = "MY_SECRET"
 app.config['SECURITY_REGISTERABLE'] = True
 app.config['SECURITY_SEND_REGISTER_EMAIL'] = False
-app.config['COUNTRIES'] = ['animals', 'cyber', 'plants', 'urban']
+app.config['COSMOS'] = ['animals', 'cyber', 'plants', 'urban']
 app.config['ACCESS_DASHBOARD'] = ['SUPER_ADMIN', 'ADMIN_ANIMALS', 'ADMIN_CYBER', 'ADMIN_PLANTS',  'ADMIN_URBAN']
 
 db = SQLAlchemy(app)
@@ -65,31 +65,23 @@ def signup():
     if request.user:
         return redirect(url_for('home'))        
     if request.method == 'POST':
-        # POST_get.getSessionUser
         name = request.form['name']
         surname = request.form['surname']
         email = request.form['email']
         password = request.form['password']
         cosmo = request.form['cosmo']        
-
         if Users.query.filter_by(email=email).first() is not None:
             flash('Email already exists', 'danger')
             return redirect(url_for('signup'))
-
         password = hashlib.md5(password.encode("utf8")).hexdigest() 
-
         new_user = Users(name=name, 
                         surname=surname,
                         email=email,
                         password=password,
                         cosmo=cosmo,
                         roles="['USER']")
-
-
         db.session.add(new_user)
         db.session.commit()
-        # getSessionUser(f)
-        # @Wrap(f)
         token = jwt.encode({
             'id': new_user.id,
             'name': new_user.name,
@@ -97,12 +89,9 @@ def signup():
             'email': new_user.email,
             'roles': new_user.roles,
                 }, app.config['SECRET_KEY'], algorithm='HS256')
-        
         response = make_response(redirect(url_for('home')))
         response.set_cookie('SESSION', token)
         return response
-
-
     return render_template('home/user/signup.html')
 
 
