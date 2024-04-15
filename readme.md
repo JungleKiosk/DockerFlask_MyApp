@@ -390,8 +390,48 @@ def signup():
 > [!NOTE]
 > Once the user registers the data is sent to the pgAdmin server and recorded in the 'user' table <br> ![7_signup_pgAdmin](/back_end/assets/img/readme/7_signup_pgAdmin.png)
 
-## 🔷Creazione dei RUOLI 🧝‍♂️
+## 🔷SIGNUP: RUOLI, JWT & coockies 🧝‍♂️🔑🍪
 
-- I ruoli degli utenti sono rappresentati come stringhe all'interno del campo roles.
-- Ogni utente può avere uno o più ruoli, separati da virgole (o un altro delimitatore definito nel codice).
-- Ad esempio, un utente potrebbe avere il ruolo di "SUPER_ADMIN", "ADMIN_EGYPT", "ADMIN_ITALY", "ADMIN_SPAIN", o "ADMIN_TUNISIA", come specificato nell'elenco app.config['ACCESS_DASHBOARD'].
+1) First of all you need to import the necessary dependencies in the `requirements.txt`:
+
+```
+PyJWT
+bcrypt
+flask-wtf
+flask-security
+email-validator
+flask-migrate
+```
+```
+> [!CAUTION]
+> ⚠️Remember: EVERY TIME YOU ADD A DEPENDENCE IN `requirements.txt` you ALWAYS NEED TO DO THE Docker Compose BUILD🛠️🐋
+```
+then import the libraries into `main.py`:
+
+```
+from flask import Flask, request,render_template, redirect, url_for, make_response, session, Response, flash, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from os import environ, path
+import sys
+import hashlib
+import jwt
+from flask_migrate import Migrate
+from werkzeug.security import check_password_hash
+```
+2) we move on to defining the data model used to represent users in the database.
+
+```
+app = Flask(__name__)
+app.secret_key = environ.get('SECRET_KEY')
+```
+
+`app.secret_key = environ.get('SECRET_KEY')` set the secret key of the Flask application used for session management and cookie encryption.<br>
+> [!IMPORTANT]
+>❓What changed from before❓ (`app.secret_key = 'my_secret'`)<br> Retrieved from the environment variables of the `docker-compose.yml` file using environ.get('SECRET_KEY').<br > ![8_secret_env](/back_end/assets/img/readme/8_secret_env.png)
+
+
+> 💡Remember: app = Flask(__name__): An instance of Flask is created here, its name set to __name__, which is the name of the Python module in which it is defined. This name will be used by Flask to resolve template and static resource paths.
+
+- User roles are represented as strings within the roles field.
+- Each user can have one or more roles, separated by commas (or another delimiter defined in the code).
+- For example, a user might have the role of "SUPER_ADMIN", "ADMIN_EGYPT", "ADMIN_ITALY", "ADMIN_SPAIN", or "ADMIN_TUNISIA", as specified in the app.config['ACCESS_DASHBOARD'] list.
