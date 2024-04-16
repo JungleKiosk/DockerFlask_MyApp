@@ -527,6 +527,8 @@ I wanted to highlight the possibility of creating a folder called `partials` in 
 
 ### 🔷signup.html, @app.route('/signup', methods=['GET', 'POST']), class Users(db.Model):
 
+![13_signup_flow1](/back_end/assets/img/readme/13_signup_flow1.png)
+
 - Through the signup.html template the user can register by filling out the form and sending a `request` HTTP with the `POST` method. When a user fills out the registration `<form></form>` and `submits` it, the browser sends an HTTP POST request to the `/signup` path of your Flask server. This method indicates that the form data will be sent to the server for processing.
 
 - **Definition of the Users model:** The Users model represents the structure of the users table in the database. Each row in this table will    correspond to a single user. The columns in the template (id, name, surname, email, cosmo, password, roles) correspond to the data fields that will be stored for each user.
@@ -540,6 +542,7 @@ I wanted to highlight the possibility of creating a folder called `partials` in 
 - **Password hashing:** The password provided by the user is first converted into a hash using the `MD5` hashing algorithm before being stored in the database. This is done for security reasons, so that passwords are not stored as plain text in the database.
 
 - **Password Checking:** The Users template includes a `check_password` method that allows you to check whether a supplied password matches the password stored for a given user. This is useful for authenticating users during the login process.
+    **haslib**
     - The password checking logic in this code uses the `MD5` hash function to secure user passwords.
     - Password hashing: When a new user registers, the password provided is converted into a hash using the MD5 algorithm. This is done via the following line of code:<br>
     ```
@@ -549,6 +552,16 @@ I wanted to highlight the possibility of creating a folder called `partials` in 
 
 > [!NOTE]
 > LOGIN_ During the login process, when a user enters their password, it is again converted into a hash using the same MD5 algorithm. Next, the hash of the password provided by the user is compared with the hash saved in the database for the corresponding user. If the two hashes match, the password is considered correct and the user is successfully authenticated. This is generally done using the check_password_hash function, but the provided code is missing the reference to self.password_hash, which should be used to compare the hash stored in the database with the one provided by the user.
+
+## 🟦 auth.py - getSessionUser
+
+The `auth.py` file provides a decorator function called `getSessionUser`, which is used to decode the JWT token received in requests and set the request.user object with the authenticated user's information. This is useful for verifying user authentication in other parts of the application.
+
+![14_signup_flow2](/back_end/assets/img/readme/14_signup_flow2.png)
+
+- `db.session.add(new_user):` adds the **new_user object**, representing the new user, to the database session. In practice, it puts the object into a **"tracked"** state by the session so that any changes to it are logged.
+
+- `db.session.commit():` This confirms all changes made in the database session, including adding the new user. After this call, the changes become permanent in the database.
 
 - Default roles: When a new user is registered, the role of 'USER' is assigned by default. This is done in creating a new user using roles="['USER']".
 
@@ -564,4 +577,26 @@ I wanted to highlight the possibility of creating a folder called `partials` in 
     `app.config['ACCESS_DASHBOARD'] = ['SUPER_ADMIN', 'ADMIN_ANIMALS', 'ADMIN_CYBER', 'ADMIN_PLANTS',  'ADMIN_URBAN']`<br>
     when a new user is registered, they are automatically assigned the role of 'USER'.
 
+- JWT (JSON Web Token)
+
+This part of the code takes care of generating a JWT token (JSON Web Token) for the newly registered user and adding it as a cookie to the HTTP response.
+
+```
+token = jwt.encode({
+            'id': new_user.id,
+            'name': new_user.name,
+            'surname': new_user.surname,
+            'email': new_user.email,
+            'roles': new_user.roles,
+                }, app.config['SECRET_KEY'], algorithm='HS256')
+``` 
+Here the `JWT` token is generated. A dictionary is passed containing the user's information, such as ID, first name, last name, email, and roles. This dictionary is encoded into the token using the application's secret key (SECRET_KEY) as the signature. The algorithm used for signing is `HMAC` with `SHA-256 (HS256)`.
+
+`response = make_response(redirect(url_for('home')))` A response object is created that redirects the user to the home page after registration.
+
+`response.set_cookie('SESSION', token)` The cookie in the HTTP response is set here. The cookie is called 'SESSION' and its value is the newly generated JWT token. This cookie is used to identify and authenticate the user in subsequent requests.
+
+## 🟦 auth.py - getSessionUser
+
+The `auth.py` file provides a decorator function called `getSessionUser`, which is used to decode the JWT token received in requests and set the request.user object with the authenticated user's information. This is useful for verifying user authentication in other parts of the application.
 
