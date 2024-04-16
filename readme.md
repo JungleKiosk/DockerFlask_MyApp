@@ -334,7 +334,7 @@ HTML code
 
 ### 🔹Flowchart SIGNUP
 
-1) l'utente accede alla pagina HOME
+1) The user accesses the HOME page
 
 ```
 @app.route('/')
@@ -390,9 +390,11 @@ def signup():
 > [!NOTE]
 > Once the user registers the data is sent to the pgAdmin server and recorded in the 'user' table <br> ![7_signup_pgAdmin](/back_end/assets/img/readme/7_signup_pgAdmin.png)
 
-## 🟦 SIGN UP: ROLES, JWT and cookies 🧝🧙‍♂️🧘🧑‍🚀
-
+## 🟦 SIGN UP: ROLES, JWT and cookies 🔑🍪
+## 🧝🧙‍♂️🧘
 ### 1) First of all you need to import the necessary dependencies in the `requirements.txt`:
+
+The following dependencies will also be used for login processes and CRUD
 
 ```
 PyJWT
@@ -489,6 +491,45 @@ DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
 
 > [!NOTE]
 >The Migrate object requires two parameters:<br>- `app`: The Flask application that the database migrations are associated with.<br>- `db`: The SQLAlchemy object representing the application database.<br> When used in conjunction with Flask-Migrate, the Migrate object allows you to generate, apply, and cancel database migrations using command-line commands, allowing complete control over your database schema as you develop and upgrade your application.
+
+## 🟦 SIGNUP Template ⛩️Jinja⛩️
+
+### 🔷Introduction to using Jinja
+
+Per la creazione dell'interfaccia grafica viene sfruttato **Jinja2** che permette di separare in "blocchi" il codice HTML.
+Per avere questo vantaggio è necessario istituire una cartella chiamata `templates` all'interno della cartella principale di `back_end`
+
+👉[documentation Jinja2](https://jinja.palletsprojects.com/en/3.1.x/)
+
+```
+back_end|
+        |-assets
+        |-templates
+        |-Dockerfile
+        |-main.py
+        |-requirements.txt
+docker-compose.yml
+readme.md
+```
+
+We start by creating a file called base.html, which will act as the main container for all `Jinja blocks` <br>
+![10_templates_base](/back_end/assets/img/readme/10_templates_base.png)
+
+The Jinja blocks are highlighted below, these blocks will be linked to other HTML files (home, navbar, userPage...) which in turn will contain other Jinja blocks...
+
+![11_base_block](/back_end/assets/img/readme/11_base_block.png)
+
+This therefore allows you to divide the HTML template files into folders, below is the example of the repo code
+
+![12_base_block](/back_end/assets/img/readme/12_base_block.png)
+
+I wanted to highlight the possibility of creating a folder called `partials` in which you can insert pieces of code relating to **widgets** or other DOM objects
+
+### 🔷signup.html, @app.route('/signup', methods=['GET', 'POST']), class Users(db.Model):
+
+Through the signup.html template the user can register by filling out the form and sending a `request` HTTP with the `POST` method
+
+
 
 
 

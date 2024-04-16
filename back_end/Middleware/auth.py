@@ -18,16 +18,3 @@ def getSessionUser(f):
         return f(*args, **kwargs)
     return decorated_function
 
-
-def loginRequired(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):        
-        try:
-            if 'SESSION' in request.cookies:
-                request.user = jwt.decode(request.cookies['SESSION'], os.environ['SECRET_KEY'], algorithms='HS256')
-                return f(*args, **kwargs)
-            else:
-                return Response("", status=401)          
-        except:
-            return Response("", status=401)
-    return decorated_function

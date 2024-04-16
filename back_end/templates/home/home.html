@@ -1,22 +1,20 @@
-{% extends "base.html" %}
-
+{% extends "base.html" %}*
 {% block title %}
 Home
 {% endblock %}
 {% include "partials/navbar.html" %}
 {% block content %}
-
 <style>
 a{
     text-decoration: none;
     color: rgb(100, 149, 237);
 }
 </style>
-
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-12 col-lg-12 jumbotron">
-            <h1 style="color: rgb(100, 149, 237);" class="text-center">COSMOS</h1>
+            <h1 style="color: rgb(100, 149, 237);"
+                class="text-center">COSMOS</h1>
             <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.
                 Veniam odio laborum cumque at nostrum aut
                 nemo
@@ -29,10 +27,8 @@ a{
                 type="submit">
                 <a href>myCosmo</a>
             </button>
-
         </div>
     </div>
-    
     <div class="row justify-content-center mt-5">
         <div class="col-2">
             <div class="card text-body text-center bg-dark">
@@ -40,32 +36,38 @@ a{
                 <h4>🦥</h4>
             </div>
         </div>
-
         <div class="col-2">
             <div class="card text-body text-center bg-dark">
                 <h1><a href="/items">Cyber</a></h1>
                 <h4>🤖</h4>
             </div>
         </div>
-
         <div class="col-2">
             <div class="card text-body text-center bg-dark">
                 <h1><a href="/items">Plants</a></h1>
                 <h4>🌳</h4>
             </div>
         </div>
-
         <div class="col-2">
             <div class="card text-body text-center bg-dark">
                 <h1><a href="/items">Urban</a></h1>
                 <h4>🍕</h4>
             </div>
         </div>
-
     </div>
 </div>
-
-
-
-
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
