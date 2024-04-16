@@ -527,10 +527,41 @@ I wanted to highlight the possibility of creating a folder called `partials` in 
 
 ### 🔷signup.html, @app.route('/signup', methods=['GET', 'POST']), class Users(db.Model):
 
-Through the signup.html template the user can register by filling out the form and sending a `request` HTTP with the `POST` method
+- Through the signup.html template the user can register by filling out the form and sending a `request` HTTP with the `POST` method. When a user fills out the registration `<form></form>` and `submits` it, the browser sends an HTTP POST request to the `/signup` path of your Flask server. This method indicates that the form data will be sent to the server for processing.
 
+- **Definition of the Users model:** The Users model represents the structure of the users table in the database. Each row in this table will    correspond to a single user. The columns in the template (id, name, surname, email, cosmo, password, roles) correspond to the data fields that will be stored for each user.
 
+- **PrimaryKey and Autoincrement:** The `id column` is the primary key of the users table. Setting `primary_key=True` means that this field will be the primary key and `autoincrement=True` means that the value will be automatically incremented for each new row inserted into the table.
 
+- **Email Uniqueness:** The email column is defined as unique=True, which means that each value in this column must be unique. This prevents multiple users from registering with the same email.
 
+- **Check email existence:** Before creating a new user in the database, the code checks whether the email provided in the registration form is already present in the database. This is done using `Users.query.filter_by(email=email).first().` If a user already exists with that email, an error message is returned and the user is redirected to the registration page.
+
+- **Password hashing:** The password provided by the user is first converted into a hash using the `MD5` hashing algorithm before being stored in the database. This is done for security reasons, so that passwords are not stored as plain text in the database.
+
+- **Password Checking:** The Users template includes a `check_password` method that allows you to check whether a supplied password matches the password stored for a given user. This is useful for authenticating users during the login process.
+    - The password checking logic in this code uses the `MD5` hash function to secure user passwords.
+    - Password hashing: When a new user registers, the password provided is converted into a hash using the MD5 algorithm. This is done via the following line of code:<br>
+    ```
+    password = hashlib.md5(password.encode("utf8")).hexdigest()
+    ```
+    `hashlib.md5()` is used to calculate the MD5 hash of the password, `password.encode("utf8")` converts the password string to a UTF-8 encoded format and finally `hexdigest()` returns the hash as a hexadecimal string.
+
+> [!NOTE]
+> LOGIN_ During the login process, when a user enters their password, it is again converted into a hash using the same MD5 algorithm. Next, the hash of the password provided by the user is compared with the hash saved in the database for the corresponding user. If the two hashes match, the password is considered correct and the user is successfully authenticated. This is generally done using the check_password_hash function, but the provided code is missing the reference to self.password_hash, which should be used to compare the hash stored in the database with the one provided by the user.
+
+- Default roles: When a new user is registered, the role of 'USER' is assigned by default. This is done in creating a new user using roles="['USER']".
+
+     ```
+    new_user = Users(name=name, 
+                            surname=surname,
+                            email=email,
+                            password=password,
+                            cosmo=cosmo,
+                            roles="['USER']")
+     ```
+    - the ACCESS_DASHBOARD configuration defines a list of roles that have access to the application control panel. This configuration is linked to the roles column in the Users model because users are assigned to one or more roles when they register. When a user logs in to the application and is authenticated, her role is checked against the ACCESS_DASHBOARD configuration to determine whether she has access to the dashboard.<br>
+    `app.config['ACCESS_DASHBOARD'] = ['SUPER_ADMIN', 'ADMIN_ANIMALS', 'ADMIN_CYBER', 'ADMIN_PLANTS',  'ADMIN_URBAN']`<br>
+    when a new user is registered, they are automatically assigned the role of 'USER'.
 
 
