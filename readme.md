@@ -525,7 +525,7 @@ This therefore allows you to divide the HTML template files into folders, below 
 
 I wanted to highlight the possibility of creating a folder called `partials` in which you can insert pieces of code relating to **widgets** or other DOM objects
 
-### 🔷signup.html, @app.route('/signup', methods=['GET', 'POST']), class Users(db.Model):
+### 🟦SIGNUP flow - hash, SESSION, JWT
 
 ![13_signup_flow1](/back_end/assets/img/readme/13_signup_flow1.png)
 
@@ -553,31 +553,28 @@ I wanted to highlight the possibility of creating a folder called `partials` in 
 > [!NOTE]
 > LOGIN_ During the login process, when a user enters their password, it is again converted into a hash using the same MD5 algorithm. Next, the hash of the password provided by the user is compared with the hash saved in the database for the corresponding user. If the two hashes match, the password is considered correct and the user is successfully authenticated. This is generally done using the check_password_hash function, but the provided code is missing the reference to self.password_hash, which should be used to compare the hash stored in the database with the one provided by the user.
 
-## 🟦 auth.py - getSessionUser
-
-The `auth.py` file provides a decorator function called `getSessionUser`, which is used to decode the JWT token received in requests and set the request.user object with the authenticated user's information. This is useful for verifying user authentication in other parts of the application.
-
-![14_signup_flow2](/back_end/assets/img/readme/14_signup_flow2.png)
-
 - `db.session.add(new_user):` adds the **new_user object**, representing the new user, to the database session. In practice, it puts the object into a **"tracked"** state by the session so that any changes to it are logged.
 
 - `db.session.commit():` This confirms all changes made in the database session, including adding the new user. After this call, the changes become permanent in the database.
 
-- Default roles: When a new user is registered, the role of 'USER' is assigned by default. This is done in creating a new user using roles="['USER']".
-
-     ```
+> [!NOTE]
+> Default roles: When a new user is registered, the role of 'USER' is assigned by default. This is done in creating a new user using roles="['USER']".
+    ```
     new_user = Users(name=name, 
                             surname=surname,
                             email=email,
                             password=password,
                             cosmo=cosmo,
                             roles="['USER']")
-     ```
-    - the ACCESS_DASHBOARD configuration defines a list of roles that have access to the application control panel. This configuration is linked to the roles column in the Users model because users are assigned to one or more roles when they register. When a user logs in to the application and is authenticated, her role is checked against the ACCESS_DASHBOARD configuration to determine whether she has access to the dashboard.<br>
-    `app.config['ACCESS_DASHBOARD'] = ['SUPER_ADMIN', 'ADMIN_ANIMALS', 'ADMIN_CYBER', 'ADMIN_PLANTS',  'ADMIN_URBAN']`<br>
-    when a new user is registered, they are automatically assigned the role of 'USER'.
 
-- JWT (JSON Web Token)
+    ```
+![17_role_user](/back_end/assets/img/readme/17_role_user.png)
+     
+- the `app.config['ACCESS_DASHBOARD']` configuration defines a list of roles that have access to the application control panel. This configuration is linked to the roles column in the Users model because users are assigned to one or more roles when they register. When a user logs in to the application and is authenticated, her role is checked against the ACCESS_DASHBOARD configuration to determine whether she has access to the dashboard.<br>
+`app.config['ACCESS_DASHBOARD'] = ['SUPER_ADMIN', 'ADMIN_ANIMALS', 'ADMIN_CYBER', 'ADMIN_PLANTS',  'ADMIN_URBAN']`<br>
+when a new user is registered, they are automatically assigned the role of 'USER'.
+
+- `JWT` (JSON Web Token)
 
 This part of the code takes care of generating a JWT token (JSON Web Token) for the newly registered user and adding it as a cookie to the HTTP response.
 
@@ -592,11 +589,18 @@ token = jwt.encode({
 ``` 
 Here the `JWT` token is generated. A dictionary is passed containing the user's information, such as ID, first name, last name, email, and roles. This dictionary is encoded into the token using the application's secret key (SECRET_KEY) as the signature. The algorithm used for signing is `HMAC` with `SHA-256 (HS256)`.
 
-`response = make_response(redirect(url_for('home')))` A response object is created that redirects the user to the home page after registration.
+- `response = make_response(redirect(url_for('home')))` A response object is created that redirects the user to the home page after registration.
 
-`response.set_cookie('SESSION', token)` The cookie in the HTTP response is set here. The cookie is called 'SESSION' and its value is the newly generated JWT token. This cookie is used to identify and authenticate the user in subsequent requests.
+- `response.set_cookie('SESSION', token)` The cookie in the HTTP response is set here. The cookie is called 'SESSION' and its value is the newly generated JWT token. This cookie is used to identify and authenticate the user in subsequent requests.
 
-## 🟦 auth.py - getSessionUser
+> [!NOTE]
+> `response.set_cookie('SESSION', token)` method allows you to add an HTTP cookie to the response sent to the client. <br>🍪 A cookie is a small piece of data that the server sends to the client's browser to store information. Cookies are commonly used for managing sessions, storing user preferences or tracking customer behavior. In summary, `response.set_cookie('SESSION', token)` is used to store a JWT token in a cookie for session tracking or authentication. This approach is useful for managing authentication persistence between different client requests.
 
-The `auth.py` file provides a decorator function called `getSessionUser`, which is used to decode the JWT token received in requests and set the request.user object with the authenticated user's information. This is useful for verifying user authentication in other parts of the application.
+
+## 🔷auth.py - Decorator
+
+The `auth.py` file provides a [decorator](https://www.geeksforgeeks.org/decorators-in-python/) function called `getSessionUser`, which is used to decode the JWT token received in requests and set the `request.user` object with the authenticated user's information. This is useful for verifying user authentication in other parts of the application.
+
+![14_signup_flow2](/back_end/assets/img/readme/14_signup_flow2.png)
+
 
