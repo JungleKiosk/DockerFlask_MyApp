@@ -614,10 +614,7 @@ The `auth.py` file provides a [decorator](https://www.geeksforgeeks.org/decorato
 > [!NOTE]
 > Decorator: It is a Python annotation that modifies the behavior of a function. In this case, `@wraps(f)` preserves the properties of the original function, such as its name and docstring. It helps to avoid repeating the same code over and over again... A decorator in Python wraps an existing function to add extra behavior without directly altering the original function's code.
 
-![14_signup_flow2](/back_end/assets/img/readme/14_signup_flow2.png)
-
-![17_role_user](/back_end/assets/img/readme/17_role_user.png)
-
+![16_role_user](/back_end/assets/img/readme/14_signup_flow2.png)
 
 
 `def decorated_function(*args, **kwargs)` it is the definition of the internal function that represents the main part of the decorator.
