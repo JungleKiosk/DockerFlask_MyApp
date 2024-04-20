@@ -559,15 +559,14 @@ I wanted to highlight the possibility of creating a folder called `partials` in 
 
 > [!NOTE]
 > Default roles: When a new user is registered, the role of 'USER' is assigned by default. This is done in creating a new user using roles="['USER']".
-    ```
-    new_user = Users(name=name, 
-                            surname=surname,
-                            email=email,
-                            password=password,
-                            cosmo=cosmo,
-                            roles="['USER']")
-
-    ```
+```
+new_user = Users(name=name, 
+                    surname=surname,
+                    email=email,
+                    password=password,
+                    cosmo=cosmo,
+                    roles="['USER']")
+```
 ![17_role_user](/back_end/assets/img/readme/17_role_user.png)
      
 - the `app.config['ACCESS_DASHBOARD']` configuration defines a list of roles that have access to the application control panel. This configuration is linked to the roles column in the Users model because users are assigned to one or more roles when they register. When a user logs in to the application and is authenticated, her role is checked against the ACCESS_DASHBOARD configuration to determine whether she has access to the dashboard.<br>
@@ -598,9 +597,78 @@ Here the `JWT` token is generated. A dictionary is passed containing the user's 
 
 
 ## 🔷auth.py - Decorator
+```
+back_end|
+        |-assets
+        |-Middleware|-auth.py
+        |-templates
+        |-Dockerfile
+        |-main.py
+        |-requirements.txt
+docker-compose.yml
+readme.md
+```
 
 The `auth.py` file provides a [decorator](https://www.geeksforgeeks.org/decorators-in-python/) function called `getSessionUser`, which is used to decode the JWT token received in requests and set the `request.user` object with the authenticated user's information. This is useful for verifying user authentication in other parts of the application.
 
+> [!NOTE]
+> Decorator: It is a Python annotation that modifies the behavior of a function. In this case, `@wraps(f)` preserves the properties of the original function, such as its name and docstring. It helps to avoid repeating the same code over and over again... A decorator in Python wraps an existing function to add extra behavior without directly altering the original function's code.
+
 ![14_signup_flow2](/back_end/assets/img/readme/14_signup_flow2.png)
 
+![17_role_user](/back_end/assets/img/readme/17_role_user.png)
 
+
+
+`def decorated_function(*args, **kwargs)` it is the definition of the internal function that represents the main part of the decorator.
+
+**Components**
+`*args`: Allows you to pass an arbitrary number of positional arguments to the function. It could be an empty list, a single value, or multiple values.
+`**kwargs`: Allows you to pass an arbitrary number of named arguments (keyword arguments) to the function. It works like a dictionary where the keys are the names of the arguments and the values are their contents.
+
+> [!NOTE]
+> The use of *args and **kwargs ensures that the decorator is flexible, adapting to a wide range of functions, regardless of the number and types of arguments they accept. It's a powerful way to extend the functionality of a function while keeping its interface intact.
+
+In this specific case, the decorator allows you to add an authentication check (JWT based) to any Flask function. If the user is authenticated, you get the user's details; otherwise, the control may deviate to another course or display an error message.
+
+**Purpose of the Internal Function**
+When you define a decorator, you often use an internal function to represent the decorated behavior. This function wraps the original function, allowing the decorator to add extra functionality, such as authentication checking in this case.
+
+**Adding Behavior:** The internal function decorated_function checks whether the 'SESSION' cookie is present in the request and, if so, decodes the JWT token to get the user details and their roles. If the cookie is not present, set request.user to None.
+
+**Decoding the JWT**
+- `request.cookies['SESSION']`: Accesses the cookie named 'SESSION' in the current HTTP request. This cookie should contain the JWT token representing user authentication.
+- `os.environ['SECRET_KEY']`: Retrieves a secret key from the system environment. This key is used to encode and decode JWT tokens, ensuring that only those who know this key can interpret the token.
+- `jwt.decode(token, secret, algorithms='HS256')`: Decodes the JWT token using the secret key and the specified algorithm (HS256, a symmetric key encryption algorithm). If the token has been changed or if the key is wrong, the decryption fails, raising an exception.
+
+**Changing the 'roles' Field**
+`request.user['roles']`: Access to the 'roles' field of the decoded token. This field should contain the user's roles, often as a string.
+concatenated replace(): The series of replace() removes various superfluous characters and normalizes the text:
+- replace("'", ''): Remove apostrophes.
+- replace('[', ''): Removes open square brackets.
+- replace(']', ''): Removes closing square brackets.
+- replace('"', ''): Removes double quotes.
+- replace(' ', ''): Remove spaces.
+- split(','): Transforms the string into a list, using the comma as a delimiter.
+
+> [!NOTE]
+> Using the `try block` is to handle exceptions that may occur during code execution. In Python, the `try block` allows you to execute code that might generate errors, and if those errors occur, the execution flow is directed to an except block where you can handle the error without causing the program to terminate abnormally.
+
+**Why use try?**
+1) Handle expected errors: If an operation has a probability of failure (such as decoding a JWT), using try allows you to catch and handle the error in a controlled manner.
+2) Avoid application crashes: Without trying, an exception would cause program execution to terminate and, in the case of web applications like Flask, cause a server error and an error HTTP response to the client.
+3) Provide helpful error messages: With try, you can return clearer error messages to the user or take specific actions when errors occur.
+4) Improve code robustness: Handling errors proactively improves the quality and robustness of your code, reducing the chance of critical issues in production.
+
+In the code you provided, the try block is used to attempt to decode the JWT token present in the request cookies:
+- If the token is valid and decodable, execution continues without any problems.
+- If the token is invalid, it may throw a jwt.DecodeError exception. In this case, the exception is caught and request.user is set to None, indicating that the user is not authenticated.
+
+**Using @wraps**
+- @wraps(f) is used inside a decorator to preserve the original function information.
+- If you don't use @wraps, the decorated function may lose details such as the function name, docstring, and other metadata.
+- When @wraps(f) is applied to the decorated_function decorator, it ensures that the original function (the one that is passed as an argument to getSessionUser) retains its metadata even after being decorated.
+**Why (f)?**
+- The syntax @wraps(f) is used at the beginning of the definition of a decorator function. When @wraps is applied, the original function (f) is passed as an argument and is "wrapped" by the decorator. 
+
+- (f) at the end of the decorator is the way to apply the decorator to a function. Essentially, when you write @getSessionUser, you apply the decorator to the following function. Closing with (f) indicates that you are returning a modified function.
